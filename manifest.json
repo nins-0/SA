@@ -1,0 +1,12 @@
+[
+  {
+    "id": "tracker",
+    "name": "Tracker App",
+    "url": "https://yourusername.github.io/your-repo/mini-apps/tracker/index.html"
+  },
+  {
+    "id": "form",
+    "name": "Form App",
+    "url": "https://yourusername.github.io/your-repo/mini-apps/form/index.html"
+  }
+]
