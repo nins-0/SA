@@ -1,26 +1,61 @@
+let watchId = null;
+
 function sendMessage(data) {
-  if (window.ReactNativeWebView && window.ReactNativeWebView.postMessage) {
+  if (window.ReactNativeWebView) {
     window.ReactNativeWebView.postMessage(JSON.stringify(data));
+  } else {
+    console.log("Not running inside React Native. Data:", data);
   }
 }
 
-function getUserLocation() {
+function startLocationUpdates() {
   if (navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition(
+    watchId = navigator.geolocation.watchPosition(
       (position) => {
         const { latitude, longitude } = position.coords;
-        sendMessage({ event: 'location', latitude, longitude });
-
-        // Redirect to map page with location in URL
-        window.location.href = `map.html?lat=${latitude}&lng=${longitude}`;
+        sendMessage({
+          event: "location_update",
+          latitude,
+          longitude,
+          timestamp: Date.now()
+        });
       },
       (error) => {
-        alert("Location error: " + error.message);
-        sendMessage({ event: 'location_error', code: error.code, message: error.message });
+        sendMessage({
+          event: "location_error",
+          code: error.code,
+          message: error.message
+        });
+      },
+      {
+        enableHighAccuracy: true,
+        maximumAge: 1000,
+        timeout: 10000,
       }
     );
   } else {
-    alert("Geolocation not supported.");
-    sendMessage({ event: 'location_error', message: 'Geolocation not supported.' });
+    sendMessage({
+      event: "location_error",
+      message: "Geolocation is not supported"
+    });
+  }
+}
+
+function stopLocationUpdates() {
+  if (watchId !== null) {
+    navigator.geolocation.clearWatch(watchId);
+    watchId = null;
+  }
+}
+
+function openMapPage() {
+  window.location.href = "map.html";
+}
+
+function exitApp() {
+  if (window.ReactNativeWebView) {
+    window.ReactNativeWebView.postMessage(JSON.stringify({ event: "exit" }));
+  } else {
+    alert("Running outside React Native.");
   }
 }
