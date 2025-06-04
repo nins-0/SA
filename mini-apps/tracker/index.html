@@ -1,13 +1,18 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Tracker Mini App</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Form Mini App</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <h1>Tracker App</h1>
-  <button onclick="exitApp()">Exit App</button>
+  <div class="app">
+    <div class="card">
+      <h1>Mini App</h1>
+      <button onclick="getUserLocation()">Get Location</button>
+      <button onclick="exitApp()">Exit App</button>
+    </div>
+  </div>
   <script src="app.js"></script>
 </body>
 </html>
