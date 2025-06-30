@@ -2,11 +2,13 @@
   {
     "id": "tracker",
     "name": "Tracker App",
-    "url": "https://nins-0.github.io/SA/mini-apps/tracker/index.html"
+    "url": "https://nins-0.github.io/SA/mini-apps/tracker/index.html",
+    "logo": "https://nins-0.github.io/SA/mini-apps/assets/place.png"
   },
   {
     "id": "form",
     "name": "Form App",
-    "url": "https://nins-0.github.io/SA/mini-apps/form/index.html"
+    "url": "https://nins-0.github.io/SA/mini-apps/form/index.html",
+    "logo": "https://nins-0.github.io/SA/mini-apps/assets/information.png"
   }
 ]
