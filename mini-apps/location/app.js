@@ -110,16 +110,16 @@ function updateLocation(lat, lng) {
   if (circle) {
     const distance = map.distance([lat, lng], circle.getLatLng());
     if (distance <= RADIUS_METERS) {
-      banner.textContent = "✅ You are within the geofence";
+      banner.textContent = "You are within the geofence";
       banner.style.backgroundColor = "#7ea387"; // green
       banner.style.color = "#2b2b2b";
     } else {
-      banner.textContent = "🚫 You are outside the geofence";
+      banner.textContent = "You are outside the geofence";
       banner.style.backgroundColor = "#c48989"; // red
       banner.style.color = "#2b2b2b";
     }
   } else {
-    banner.textContent = "📍 No geofence set yet";
+    banner.textContent = "No geofence set yet";
     banner.style.backgroundColor = "#737575"; // grey
     banner.style.color = "#000";
   }
