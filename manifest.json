@@ -1,13 +1,13 @@
 [
   {
     "id": "location",
-    "name": "Location App",
+    "name": "My Location",
     "url": "https://nins-0.github.io/SA/mini-apps/location/index.html",
     "logo": "https://nins-0.github.io/SA/mini-apps/assets/place.png"
   },
   {
     "id": "info",
-    "name": "Info App",
+    "name": "Info",
     "url": "https://nins-0.github.io/SA/mini-apps/info/index.html",
     "logo": "https://nins-0.github.io/SA/mini-apps/assets/information.png"
   }
