@@ -1,13 +1,3 @@
-let watchId = null;
-
-function sendMessage(data) {
-  if (window.ReactNativeWebView) {
-    window.ReactNativeWebView.postMessage(JSON.stringify(data));
-  } else {
-    console.log("Not running inside React Native. Data:", data);
-  }
-}
-
 // function startLocationUpdates() {
 //   if (navigator.geolocation) {
 //     watchId = navigator.geolocation.watchPosition(
@@ -48,7 +38,48 @@ function sendMessage(data) {
 //   }
 // }
 
-let map, marker;
+// let map, marker;
+
+// function initMap(lat, lng) {
+//   map = L.map('map').setView([lat, lng], 16);
+
+//   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+//     attribution: '&copy; OpenStreetMap contributors'
+//   }).addTo(map);
+
+//   marker = L.marker([lat, lng])
+//     .addTo(map)
+//     .bindPopup("You are here");
+// }
+
+// function updateLocation(lat, lng) {
+//   if (!map) {
+//     initMap(lat, lng);
+//   } else {
+//     marker.setLatLng([lat, lng]);
+//     map.setView([lat, lng]);
+//   }
+// }
+
+// navigator.geolocation.watchPosition(
+//   (pos) => {
+//     const { latitude, longitude } = pos.coords;
+//     updateLocation(latitude, longitude);
+//   },
+//   (err) => {
+//     alert("Unable to get location: " + err.message);
+//   },
+//   {
+//     enableHighAccuracy: true,
+//     maximumAge: 1000,
+//     timeout: 10000,
+//   }
+// );
+
+let map, marker, circle;
+let userLat = null;
+let userLng = null;
+const RADIUS_METERS = 100;
 
 function initMap(lat, lng) {
   map = L.map('map').setView([lat, lng], 16);
@@ -59,17 +90,40 @@ function initMap(lat, lng) {
 
   marker = L.marker([lat, lng])
     .addTo(map)
-    .bindPopup("You are here")
-    .openPopup();
+    .bindPopup("You are here");
 }
 
 function updateLocation(lat, lng) {
+  userLat = lat;
+  userLng = lng;
+
   if (!map) {
     initMap(lat, lng);
   } else {
     marker.setLatLng([lat, lng]);
     map.setView([lat, lng]);
   }
+
+    // Check if user is within geofence and update banner
+  const banner = document.getElementById('statusBanner');
+
+  if (circle) {
+    const distance = map.distance([lat, lng], circle.getLatLng());
+    if (distance <= RADIUS_METERS) {
+      banner.textContent = "✅ You are within the geofence";
+      banner.style.backgroundColor = "#28a745"; // green
+      banner.style.color = "#fff";
+    } else {
+      banner.textContent = "🚫 You are outside the geofence";
+      banner.style.backgroundColor = "#dc3545"; // red
+      banner.style.color = "#fff";
+    }
+  } else {
+    banner.textContent = "📍 No geofence set yet";
+    banner.style.backgroundColor = "#ffc107"; // yellow
+    banner.style.color = "#000";
+  }
+
 }
 
 navigator.geolocation.watchPosition(
@@ -87,3 +141,23 @@ navigator.geolocation.watchPosition(
   }
 );
 
+// Button to create/update geofence
+document.getElementById('geofenceBtn').addEventListener('click', () => {
+  if (userLat === null || userLng === null) {
+    alert("Waiting for GPS...");
+    return;
+  }
+
+  if (circle) {
+    map.removeLayer(circle); // Remove existing geofence
+  }
+
+  circle = L.circle([userLat, userLng], {
+    color: 'blue',
+    fillColor: '#3f9cff',
+    fillOpacity: 0.3,
+    radius: RADIUS_METERS
+  }).addTo(map);
+
+  alert("Geofence set at current location.");
+});

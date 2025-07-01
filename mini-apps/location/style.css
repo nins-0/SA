@@ -59,3 +59,36 @@ html, body, #map {
   margin: 0;
   padding: 0;
 }
+
+#map {
+      height: 100vh;
+      width: 100%;
+    }
+
+#geofenceBtn {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  z-index: 1000;
+  padding: 10px 16px;
+  background: #007bff;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+  cursor: pointer;
+}
+
+#statusBanner {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  padding: 12px;
+  text-align: center;
+  font-weight: bold;
+  background-color: #ffc107; /* yellow by default */
+  color: #000;
+  z-index: 1001;
+}
