@@ -82,13 +82,12 @@ html, body, #map {
 
 #statusBanner {
   position: absolute;
-  top: 0;
-  left: 0;
+  bottom: 0;
   width: 100%;
   padding: 12px;
   text-align: center;
-  font-weight: bold;
+  font-weight: lighter;
   background-color: #ffc107; /* yellow by default */
-  color: #000;
+  color: #2b2b2b;
   z-index: 1001;
 }

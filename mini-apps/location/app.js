@@ -79,7 +79,7 @@
 let map, marker, circle;
 let userLat = null;
 let userLng = null;
-const RADIUS_METERS = 100;
+const RADIUS_METERS = 200;
 
 function initMap(lat, lng) {
   map = L.map('map').setView([lat, lng], 16);
@@ -111,16 +111,16 @@ function updateLocation(lat, lng) {
     const distance = map.distance([lat, lng], circle.getLatLng());
     if (distance <= RADIUS_METERS) {
       banner.textContent = "✅ You are within the geofence";
-      banner.style.backgroundColor = "#28a745"; // green
-      banner.style.color = "#fff";
+      banner.style.backgroundColor = "#7ea387"; // green
+      banner.style.color = "#2b2b2b";
     } else {
       banner.textContent = "🚫 You are outside the geofence";
-      banner.style.backgroundColor = "#dc3545"; // red
-      banner.style.color = "#fff";
+      banner.style.backgroundColor = "#c48989"; // red
+      banner.style.color = "#2b2b2b";
     }
   } else {
     banner.textContent = "📍 No geofence set yet";
-    banner.style.backgroundColor = "#ffc107"; // yellow
+    banner.style.backgroundColor = "#737575"; // grey
     banner.style.color = "#000";
   }
 
@@ -149,7 +149,7 @@ document.getElementById('geofenceBtn').addEventListener('click', () => {
   }
 
   if (circle) {
-    map.removeLayer(circle); // Remove existing geofence
+    map.removeLayer(circle); 
   }
 
   circle = L.circle([userLat, userLng], {
@@ -159,5 +159,4 @@ document.getElementById('geofenceBtn').addEventListener('click', () => {
     radius: RADIUS_METERS
   }).addTo(map);
 
-  alert("Geofence set at current location.");
 });
