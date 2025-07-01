@@ -4,18 +4,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>Location Mini App</title>
   <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
 </head>
 <body>
-  <div class="app">
-    <div class="card">
-      <h1>Mini App</h1>
-      <!-- <button onclick="getUserLocation()">Get Location</button> -->
-      <!-- <button onclick="startLocationUpdates()">Start Tracking</button>
-      <button onclick="stopLocationUpdates()">Stop Tracking</button> -->
-      <button onclick="openMapPage()">Show on Map</button>
-      <button onclick="exitApp()">Exit App</button>
-    </div>
-  </div>
+<body>
+
+  <div id="map"></div>
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
   <script src="app.js"></script>
 </body>
 </html>
