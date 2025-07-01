@@ -69,10 +69,10 @@ html, body, #map {
 #geofenceBtn {
   position: absolute;
   top: 20px;
-  left: 20px;
+  left: 50%;                     
+  transform: translateX(-50%); 
   z-index: 1000;
-  padding: 10px 16px;
-  background: #007bff;
+  background: #4c5b85;
   color: white;
   border: none;
   border-radius: 8px;
