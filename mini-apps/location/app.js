@@ -121,7 +121,7 @@ function updateLocation(lat, lng) {
   } else {
     banner.textContent = "No geofence set yet";
     banner.style.backgroundColor = "#737575"; // grey
-    banner.style.color = "#000";
+    banner.style.color = "#fff";
   }
 
 }
