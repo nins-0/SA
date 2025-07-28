@@ -104,23 +104,22 @@ function updateLocation(lat, lng) {
     map.setView([lat, lng]);
   }
 
-    // Check if user is within geofence and update banner
   const banner = document.getElementById('statusBanner');
 
   if (circle) {
     const distance = map.distance([lat, lng], circle.getLatLng());
     if (distance <= RADIUS_METERS) {
       banner.textContent = "You are within the geofence";
-      banner.style.backgroundColor = "#7ea387"; // green
+      banner.style.backgroundColor = "#7ea387"; 
       banner.style.color = "#2b2b2b";
     } else {
       banner.textContent = "You are outside the geofence";
-      banner.style.backgroundColor = "#c48989"; // red
+      banner.style.backgroundColor = "#c48989"; 
       banner.style.color = "#2b2b2b";
     }
   } else {
     banner.textContent = "No geofence set yet";
-    banner.style.backgroundColor = "#737575"; // grey
+    banner.style.backgroundColor = "#737575"; 
     banner.style.color = "#fff";
   }
 
@@ -141,7 +140,6 @@ navigator.geolocation.watchPosition(
   }
 );
 
-// Button to create/update geofence
 document.getElementById('geofenceBtn').addEventListener('click', () => {
   if (userLat === null || userLng === null) {
     alert("Waiting for GPS...");
@@ -159,4 +157,5 @@ document.getElementById('geofenceBtn').addEventListener('click', () => {
     radius: RADIUS_METERS
   }).addTo(map);
 
+  updateLocation(userLat, userLng);
 });
