@@ -1,14 +1,36 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>Info Mini</title>
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <div class="app">
-      <p>MINI</p>
+    <h1>Feature Tour of My Location</h1>
+
+    <img src="map.jpg" alt="Map illustration" class="feature-image" />
+
+    <section class="description">
+      <p>This feature retrieves the user's location and performs geofencing.</p>
+
+      <h2>Features:</h2>
+      <ul>
+        <li>🗺️ Display of map</li>
+        <li>📍 Pin user real-time location on map</li>
+        <li>⭕ Click the <strong>'Set Geofence'</strong> button to set a 200 meter radius geofence from the user's current location as the center</li>
+      </ul>
+
+      <h2>Status Indicators:</h2>
+      <ul>
+        <li>🙆🏻‍♂️ Within geofence</li>
+        <li>🙅🏻‍♂️ Outside of geofence</li>
+        <li>🤷🏻‍♂️ No geofence is set</li>
+      </ul>
+    </section>
   </div>
+
   <script src="app.js"></script>
 </body>
 </html>
