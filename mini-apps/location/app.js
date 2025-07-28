@@ -151,8 +151,8 @@ document.getElementById('geofenceBtn').addEventListener('click', () => {
   }
 
   circle = L.circle([userLat, userLng], {
-    color: 'blue',
-    fillColor: '#3f9cff',
+    color: 'orange',
+    fillColor: '#ff8c3fff',
     fillOpacity: 0.3,
     radius: RADIUS_METERS
   }).addTo(map);
