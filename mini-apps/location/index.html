@@ -5,13 +5,41 @@
   <title>Location Mini</title>
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+  <link rel="stylesheet"href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
 </head>
 <body>
 <body>
 
-  <button id="geofenceBtn">Set Geofence</button>
+  <button id="geofenceBtn"><i class="fas fa-map-marker-alt"></i></button>
   <div id="statusBanner">Waiting for location...</div>
   <div id="map"></div>
+  
+
+  <div id="geofenceModal" class="modal hidden">
+  <div class="modal-content">
+    <h2>Set Geofence Options</h2>
+    <label>
+      <input type="radio" name="geofenceMode" value="radius" checked /> Radius
+    </label>
+    <select id="radiusSelect">
+      <option value="100">100m</option>
+      <option value="200" selected>200m</option>
+      <option value="300">300m</option>
+      <option value="400">400m</option>
+    </select>
+
+    <label>
+      <input type="radio" name="geofenceMode" value="building" /> Building
+    </label>
+    <select id="buildingSelect"></select>
+
+    <div style="margin-top: 10px;">
+      <button id="applyGeofenceBtn">Apply</button>
+      <button id="cancelBtn">Close</button>
+    </div>
+  </div>
+  </div>
+
   <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 
   <script src="app.js"></script>

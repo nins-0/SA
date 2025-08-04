@@ -1,0 +1,34 @@
+[
+  {
+    "name": "Building A",
+    "polygon": [
+      {"latitude": 1.3319696, "longitude": 103.7436819},
+      {"latitude": 1.3315245, "longitude": 103.7443122},
+      {"latitude": 1.3314816, "longitude": 103.7442425},
+      {"latitude": 1.3314119, "longitude": 103.7441862},
+      {"latitude": 1.33131, "longitude": 103.7441754},
+      {"latitude": 1.3312402, "longitude": 103.7442023},
+      {"latitude": 1.3311652, "longitude": 103.7443095},
+      {"latitude": 1.3311035, "longitude": 103.7443846},
+      {"latitude": 1.3310391, "longitude": 103.7444919},
+      {"latitude": 1.3310284, "longitude": 103.7445429},
+      {"latitude": 1.331066, "longitude": 103.7446877},
+      {"latitude": 1.3311276, "longitude": 103.7447521},
+      {"latitude": 1.3309319, "longitude": 103.7450552},
+      {"latitude": 1.3306718, "longitude": 103.7454334},
+      {"latitude": 1.3316157, "longitude": 103.7461495},
+      {"latitude": 1.3316425, "longitude": 103.74612},
+      {"latitude": 1.3316914, "longitude": 103.7461415},
+      {"latitude": 1.3319066, "longitude": 103.7458297},
+      {"latitude": 1.3317846, "longitude": 103.7457459},
+      {"latitude": 1.3320286, "longitude": 103.7453871},
+      {"latitude": 1.3321385, "longitude": 103.7454589},
+      {"latitude": 1.3323477, "longitude": 103.7451598},
+      {"latitude": 1.3326373, "longitude": 103.7449425},
+      {"latitude": 1.3327312, "longitude": 103.7448299},
+      {"latitude": 1.3326507, "longitude": 103.7447226},
+      {"latitude": 1.3329041, "longitude": 103.744339},
+      {"latitude": 1.3319696, "longitude": 103.7436819}
+    ]
+  }
+]

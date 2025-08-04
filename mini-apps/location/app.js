@@ -76,10 +76,28 @@
 //   }
 // );
 
-let map, marker, circle;
+let map, marker, circle, polygonLayer;
 let userLat = null;
 let userLng = null;
-const RADIUS_METERS = 200;
+let currentRadius = 200;
+let buildingData = [];
+let geofenceMode = 'radius';
+let activePolygon = null;
+
+const radiusInput = document.querySelector('input[value="radius"]');
+const buildingInput = document.querySelector('input[value="building"]');
+const radiusSelect = document.getElementById('radiusSelect');
+const buildingSelect = document.getElementById('buildingSelect');
+
+radiusInput.addEventListener('change', () => {
+  radiusSelect.disabled = false;
+  buildingSelect.disabled = true;
+});
+
+buildingInput.addEventListener('change', () => {
+  radiusSelect.disabled = true;
+  buildingSelect.disabled = false;
+});
 
 function initMap(lat, lng) {
   map = L.map('map').setView([lat, lng], 16);
@@ -91,6 +109,60 @@ function initMap(lat, lng) {
   marker = L.marker([lat, lng])
     .addTo(map)
     .bindPopup("You are here");
+
+  fetch('buildings.json')
+  .then(res => res.json())
+  .then(data => {
+    buildingData = data;
+    const buildingSelect = document.getElementById('buildingSelect');
+    buildingData.forEach((b, i) => {
+      const option = document.createElement('option');
+      option.value = i;
+      option.text = b.name;
+      buildingSelect.appendChild(option);
+    });
+  });
+
+  document.getElementById('geofenceBtn').addEventListener('click', () => {
+    document.getElementById('geofenceModal').classList.remove('hidden');
+  });
+
+  document.getElementById('cancelBtn').addEventListener('click', () => {
+    document.getElementById('geofenceModal').classList.add('hidden');
+  });
+
+  document.getElementById('applyGeofenceBtn').addEventListener('click', () => {
+    document.getElementById('geofenceModal').classList.add('hidden');
+
+    const mode = document.querySelector('input[name="geofenceMode"]:checked').value;
+
+    if (circle) map.removeLayer(circle);
+    if (polygonLayer) map.removeLayer(polygonLayer);
+    geofenceMode = mode;
+
+    if (mode === 'radius') {
+      currentRadius = parseInt(document.getElementById('radiusSelect').value);
+      circle = L.circle([userLat, userLng], {
+        color: 'orange',
+        fillColor: '#ff8c3fff',
+        fillOpacity: 0.3,
+        radius: currentRadius
+      }).addTo(map);
+    } else {
+      const selectedIndex = parseInt(document.getElementById('buildingSelect').value);
+        if (isNaN(selectedIndex) || !buildingData[selectedIndex]) return;
+      const points = buildingData[selectedIndex].polygon.map(p => [p.latitude, p.longitude]);
+      polygonLayer = L.polygon(points, {
+        color: 'blue',
+        fillColor: '#3b83bd',
+        fillOpacity: 0.3
+      }).addTo(map);
+      activePolygon = points;
+    }
+
+    updateLocation(userLat, userLng);
+  });
+
 }
 
 function updateLocation(lat, lng) {
@@ -106,22 +178,26 @@ function updateLocation(lat, lng) {
 
   const banner = document.getElementById('statusBanner');
 
-  if (circle) {
+  let inside = false;
+
+  if (geofenceMode === 'radius' && circle) {
     const distance = map.distance([lat, lng], circle.getLatLng());
-    if (distance <= RADIUS_METERS) {
-      banner.textContent = "You are within the geofence";
-      banner.style.backgroundColor = "#7ea387"; 
-      banner.style.color = "#2b2b2b";
-    } else {
-      banner.textContent = "You are outside the geofence";
-      banner.style.backgroundColor = "#c48989"; 
-      banner.style.color = "#2b2b2b";
-    }
+    inside = distance <= currentRadius;
+  } else if (geofenceMode === 'building' && activePolygon) {
+    inside = pointInPolygon([lat, lng], activePolygon);
   } else {
     banner.textContent = "No geofence set yet";
-    banner.style.backgroundColor = "#737575"; 
+    banner.style.backgroundColor = "#737575";
     banner.style.color = "#fff";
+    return;
   }
+
+  banner.textContent = inside
+    ? "You are within the geofence"
+    : "You are outside the geofence";
+
+  banner.style.backgroundColor = inside ? "#7ea387" : "#c48989";
+  banner.style.color = "#2b2b2b";
 
 }
 
@@ -140,22 +216,38 @@ navigator.geolocation.watchPosition(
   }
 );
 
-document.getElementById('geofenceBtn').addEventListener('click', () => {
-  if (userLat === null || userLng === null) {
-    alert("Waiting for GPS...");
-    return;
+// document.getElementById('geofenceBtn').addEventListener('click', () => {
+//   if (userLat === null || userLng === null) {
+//     alert("Waiting for GPS...");
+//     return;
+//   }
+
+//   if (circle) {
+//     map.removeLayer(circle); 
+//   }
+
+//   circle = L.circle([userLat, userLng], {
+//     color: 'orange',
+//     fillColor: '#ff8c3fff',
+//     fillOpacity: 0.3,
+//     radius: RADIUS_METERS
+//   }).addTo(map);
+
+//   updateLocation(userLat, userLng);
+// });
+
+function pointInPolygon(point, polygon) {
+  const x = point[0], y = point[1];
+  let inside = false;
+  for (let i = 0, j = polygon.length - 1; i < polygon.length; j = i++) {
+    const xi = polygon[i][0], yi = polygon[i][1];
+    const xj = polygon[j][0], yj = polygon[j][1];
+
+    const intersect = ((yi > y) !== (yj > y)) &&
+                      (x < (xj - xi) * (y - yi) / (yj - yi + 0.0000001) + xi);
+    if (intersect) inside = !inside;
   }
+  return inside;
+}
 
-  if (circle) {
-    map.removeLayer(circle); 
-  }
 
-  circle = L.circle([userLat, userLng], {
-    color: 'orange',
-    fillColor: '#ff8c3fff',
-    fillOpacity: 0.3,
-    radius: RADIUS_METERS
-  }).addTo(map);
-
-  updateLocation(userLat, userLng);
-});
