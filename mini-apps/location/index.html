@@ -14,30 +14,30 @@
   <div id="statusBanner">Waiting for location...</div>
   <div id="map"></div>
   
-
   <div id="geofenceModal" class="modal hidden">
-  <div class="modal-content">
-    <h2>Set Geofence Options</h2>
-    <label>
-      <input type="radio" name="geofenceMode" value="radius" checked /> Radius
-    </label>
-    <select id="radiusSelect">
-      <option value="100">100m</option>
-      <option value="200" selected>200m</option>
-      <option value="300">300m</option>
-      <option value="400">400m</option>
-    </select>
+    <div class="modal-content">
+      <h2>Set Geofence</h2>
 
-    <label>
-      <input type="radio" name="geofenceMode" value="building" /> Building
-    </label>
-    <select id="buildingSelect"></select>
+      <label>
+        <input type="radio" name="geofenceMode" value="radius" checked />
+        Radius
+      </label>
+      <select id="radiusSelect">
+        <option value="100">100m</option>
+        <option value="200" selected>200m</option>
+        <option value="300">300m</option>
+        <option value="400">400m</option>
+      </select>
 
-    <div style="margin-top: 10px;">
+      <label>
+        <input type="radio" name="geofenceMode" value="building" />
+        Building
+      </label>
+      <select id="buildingSelect" disabled></select>
+
       <button id="applyGeofenceBtn">Apply</button>
       <button id="cancelBtn">Close</button>
     </div>
-  </div>
   </div>
 
   <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>

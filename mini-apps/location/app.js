@@ -124,6 +124,10 @@ function initMap(lat, lng) {
   });
 
   document.getElementById('geofenceBtn').addEventListener('click', () => {
+    const mode = document.querySelector('input[name="geofenceMode"]:checked').value;
+    radiusSelect.disabled = mode !== 'radius';
+    buildingSelect.disabled = mode !== 'building';
+
     document.getElementById('geofenceModal').classList.remove('hidden');
   });
 
@@ -215,26 +219,6 @@ navigator.geolocation.watchPosition(
     timeout: 10000,
   }
 );
-
-// document.getElementById('geofenceBtn').addEventListener('click', () => {
-//   if (userLat === null || userLng === null) {
-//     alert("Waiting for GPS...");
-//     return;
-//   }
-
-//   if (circle) {
-//     map.removeLayer(circle); 
-//   }
-
-//   circle = L.circle([userLat, userLng], {
-//     color: 'orange',
-//     fillColor: '#ff8c3fff',
-//     fillOpacity: 0.3,
-//     radius: RADIUS_METERS
-//   }).addTo(map);
-
-//   updateLocation(userLat, userLng);
-// });
 
 function pointInPolygon(point, polygon) {
   const x = point[0], y = point[1];
