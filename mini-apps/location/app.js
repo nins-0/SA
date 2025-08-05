@@ -1,6 +1,4 @@
-// import { saveLocation , getAllLocations } from './locationDB';
-
-
+import { saveLocation , getAllLocations } from './locationDB';
 
   let map, marker, circle, polygonLayer;
   let userLat = null;
@@ -103,18 +101,18 @@
 
   document.getElementById('pastLocationBtn').addEventListener('click', () => {
 
-  //   // populateLocationList();
+    populateLocationList();
 
     document.getElementById('pastLocationModal').classList.remove('hidden');
   });
 
-  // toggleBtn.addEventListener('click', () => {
-  //   shouldLog = !shouldLog;
-  //   toggleBtn.textContent = shouldLog ? 'Stop Logging' : 'Start Logging';
-  //   if (!shouldLog) {
-  //     alert('Location logging stopped');
-  //   }
-  // });
+  toggleBtn.addEventListener('click', () => {
+    shouldLog = !shouldLog;
+    toggleBtn.textContent = shouldLog ? 'Stop Logging' : 'Start Logging';
+    if (!shouldLog) {
+      alert('Location logging stopped');
+    }
+  });
 
   function updateLocation(lat, lng) {
     userLat = lat;
@@ -157,10 +155,10 @@
       const { latitude, longitude } = pos.coords;
       updateLocation(latitude, longitude);
 
-      // if (shouldLog) {
-      //   const timestamp = Date.now();
-      //   saveLocation(latitude, longitude, timestamp);
-      // }
+      if (shouldLog) {
+        const timestamp = Date.now();
+        saveLocation(latitude, longitude, timestamp);
+      }
     },
     (err) => {
       alert("Unable to get location: " + err.message);
@@ -186,22 +184,22 @@
     return inside;
   }
 
-  // async function populateLocationList() {
-  //   const locationList = document.getElementById('locationList');
-  //   locationList.innerHTML = ''; // Clear old entries
+  async function populateLocationList() {
+    const locationList = document.getElementById('locationList');
+    locationList.innerHTML = ''; // Clear old entries
 
-  //   const locations = await getAllLocations();
+    const locations = await getAllLocations();
 
-  //   if (!locations.length) {
-  //     const li = document.createElement('li');
-  //     li.textContent = 'No locations recorded.';
-  //     locationList.appendChild(li);
-  //     return;
-  //   }
+    if (!locations.length) {
+      const li = document.createElement('li');
+      li.textContent = 'No locations recorded.';
+      locationList.appendChild(li);
+      return;
+    }
 
-  //   locations.forEach(({ latitude, longitude, timestamp }) => {
-  //     const li = document.createElement('li');
-  //     li.textContent = `${new Date(timestamp).toLocaleString()} - [${latitude.toFixed(5)}, ${longitude.toFixed(5)}]`;
-  //     locationList.appendChild(li);
-  //   });
-  // }
+    locations.forEach(({ latitude, longitude, timestamp }) => {
+      const li = document.createElement('li');
+      li.textContent = `${new Date(timestamp).toLocaleString()} - [${latitude.toFixed(5)}, ${longitude.toFixed(5)}]`;
+      locationList.appendChild(li);
+    });
+  }
