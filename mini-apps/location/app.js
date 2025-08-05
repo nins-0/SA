@@ -85,7 +85,7 @@ let currentRadius = 200;
 let buildingData = [];
 let geofenceMode = 'radius';
 let activePolygon = null;
-let watchId = null;
+let shouldLog = false;
 
 const radiusInput = document.querySelector('input[value="radius"]');
 const buildingInput = document.querySelector('input[value="building"]');
@@ -177,42 +177,20 @@ document.getElementById('cancelPastLocationBtn').addEventListener('click', () =>
   document.getElementById('pastLocationModal').classList.add('hidden');
 });
 
-document.getElementById('PastLocationBtn').addEventListener('click', () => {
+document.getElementById('pastLocationBtn').addEventListener('click', () => {
 
   populateLocationList();
 
-  document.getElementById('geofenceModal').classList.remove('hidden');
+  document.getElementById('pastLocationModal').classList.remove('hidden');
 });
 
 toggleBtn.addEventListener('click', () => {
-  if (watchId === null) {
-    // Start tracking
-    watchId = navigator.geolocation.watchPosition(
-      (pos) => {
-        const { latitude, longitude } = pos.coords;
-        const timestamp = Date.now();
-        saveLocation(latitude, longitude, timestamp);
-      },
-      (err) => {
-        alert('Unable to get location: ' + err.message);
-      },
-      {
-        enableHighAccuracy: true,
-        maximumAge: 1000,
-        timeout: 10000,
-      }
-    );
-  } else {
-    // Stop tracking
-    navigator.geolocation.clearWatch(watchId);
-    watchId = null;
-    alert('Location tracking stopped');
+  shouldLog = !shouldLog;
+  toggleBtn.textContent = shouldLog ? 'Stop Logging' : 'Start Logging';
+  if (!shouldLog) {
+    alert('Location logging stopped');
   }
-
-  // ✅ Always update button text based on watchId
-  toggleBtn.textContent = watchId === null ? 'Start Logging' : 'Stop Logging';
 });
-
 
 function updateLocation(lat, lng) {
   userLat = lat;
@@ -254,6 +232,11 @@ navigator.geolocation.watchPosition(
   (pos) => {
     const { latitude, longitude } = pos.coords;
     updateLocation(latitude, longitude);
+
+    if (shouldLog) {
+      const timestamp = Date.now();
+      saveLocation(latitude, longitude, timestamp);
+    }
   },
   (err) => {
     alert("Unable to get location: " + err.message);
