@@ -80,6 +80,8 @@ import { saveLocation , getAllLocations } from './locationDB';
 
 document.addEventListener("DOMContentLoaded", () => {
 
+  console.log('Script loaded and DOM ready');
+
   let map, marker, circle, polygonLayer;
   let userLat = null;
   let userLng = null;
