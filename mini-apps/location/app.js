@@ -1,5 +1,3 @@
-import { saveLocation , getAllLocations } from './locationDB';
-
   let map, marker, circle, polygonLayer;
   let userLat = null;
   let userLng = null;
