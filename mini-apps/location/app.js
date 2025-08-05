@@ -1,4 +1,4 @@
-import { saveLocation , getAllLocations } from './locationDB';
+// import { saveLocation , getAllLocations } from './locationDB';
 
 
 
@@ -97,16 +97,16 @@ import { saveLocation , getAllLocations } from './locationDB';
 
   }
 
-  // document.getElementById('cancelPastLocationBtn').addEventListener('click', () => {
-  //   document.getElementById('pastLocationModal').classList.add('hidden');
-  // });
+  document.getElementById('cancelPastLocationBtn').addEventListener('click', () => {
+    document.getElementById('pastLocationModal').classList.add('hidden');
+  });
 
-  // document.getElementById('pastLocationBtn').addEventListener('click', () => {
+  document.getElementById('pastLocationBtn').addEventListener('click', () => {
 
   //   // populateLocationList();
 
-  //   document.getElementById('pastLocationModal').classList.remove('hidden');
-  // });
+    document.getElementById('pastLocationModal').classList.remove('hidden');
+  });
 
   // toggleBtn.addEventListener('click', () => {
   //   shouldLog = !shouldLog;
