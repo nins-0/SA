@@ -20,6 +20,46 @@ body, html {
   width: 100%;
 }
 
+#PastLocationBtn {
+  position: absolute;
+  top: 30px;
+  right: 20px;
+  width: 60px;
+  height: 60px;
+  z-index: 1000;
+  background: #4c5b85;
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-size: 28px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s ease;
+}
+
+#toggleTracking {
+  position: absolute;
+  bottom: 70px;
+  left: 20px;
+  width: 200px;
+  height: 60px;
+  z-index: 1000;
+  background: #4c5b85;
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-size: 28px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s ease;
+}
+
 /* Geofence button */
 #geofenceBtn {
   position: absolute;
@@ -39,6 +79,14 @@ body, html {
   align-items: center;
   justify-content: center;
   transition: background 0.2s ease;
+}
+
+#PastLocationBtn:hover {
+  background: #3a4566;
+}
+
+#toggleTracking:hover {
+  background: #3a4566;
 }
 
 #geofenceBtn:hover {
@@ -131,12 +179,12 @@ body, html {
   background-color: #3a4566;
 }
 
-#cancelBtn {
+#cancelGeofenceBtn {
   background-color: #ccc;
   color: #333;
 }
 
-#cancelBtn:hover {
+#cancelGeofenceBtn:hover {
   background-color: #aaa;
 }
 

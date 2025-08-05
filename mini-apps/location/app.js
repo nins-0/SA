@@ -76,6 +76,8 @@
 //   }
 // );
 
+import { saveLocation , getAllLocations } from './locationDB';
+
 let map, marker, circle, polygonLayer;
 let userLat = null;
 let userLng = null;
@@ -83,11 +85,13 @@ let currentRadius = 200;
 let buildingData = [];
 let geofenceMode = 'radius';
 let activePolygon = null;
+let watchId = null;
 
 const radiusInput = document.querySelector('input[value="radius"]');
 const buildingInput = document.querySelector('input[value="building"]');
 const radiusSelect = document.getElementById('radiusSelect');
 const buildingSelect = document.getElementById('buildingSelect');
+const toggleBtn = document.getElementById('toggleTracking');
 
 radiusInput.addEventListener('change', () => {
   radiusSelect.disabled = false;
@@ -131,7 +135,7 @@ function initMap(lat, lng) {
     document.getElementById('geofenceModal').classList.remove('hidden');
   });
 
-  document.getElementById('cancelBtn').addEventListener('click', () => {
+  document.getElementById('cancelGeofenceBtn').addEventListener('click', () => {
     document.getElementById('geofenceModal').classList.add('hidden');
   });
 
@@ -168,6 +172,47 @@ function initMap(lat, lng) {
   });
 
 }
+
+document.getElementById('cancelPastLocationBtn').addEventListener('click', () => {
+  document.getElementById('pastLocationModal').classList.add('hidden');
+});
+
+document.getElementById('PastLocationBtn').addEventListener('click', () => {
+
+  populateLocationList();
+
+  document.getElementById('geofenceModal').classList.remove('hidden');
+});
+
+toggleBtn.addEventListener('click', () => {
+  if (watchId === null) {
+    // Start tracking
+    watchId = navigator.geolocation.watchPosition(
+      (pos) => {
+        const { latitude, longitude } = pos.coords;
+        const timestamp = Date.now();
+        saveLocation(latitude, longitude, timestamp);
+      },
+      (err) => {
+        alert('Unable to get location: ' + err.message);
+      },
+      {
+        enableHighAccuracy: true,
+        maximumAge: 1000,
+        timeout: 10000,
+      }
+    );
+  } else {
+    // Stop tracking
+    navigator.geolocation.clearWatch(watchId);
+    watchId = null;
+    alert('Location tracking stopped');
+  }
+
+  // ✅ Always update button text based on watchId
+  toggleBtn.textContent = watchId === null ? 'Start Logging' : 'Stop Logging';
+});
+
 
 function updateLocation(lat, lng) {
   userLat = lat;
@@ -234,4 +279,22 @@ function pointInPolygon(point, polygon) {
   return inside;
 }
 
+async function populateLocationList() {
+  const locationList = document.getElementById('locationList');
+  locationList.innerHTML = ''; // Clear old entries
 
+  const locations = await getAllLocations();
+
+  if (!locations.length) {
+    const li = document.createElement('li');
+    li.textContent = 'No locations recorded.';
+    locationList.appendChild(li);
+    return;
+  }
+
+  locations.forEach(({ latitude, longitude, timestamp }) => {
+    const li = document.createElement('li');
+    li.textContent = `${new Date(timestamp).toLocaleString()} - [${latitude.toFixed(5)}, ${longitude.toFixed(5)}]`;
+    locationList.appendChild(li);
+  });
+}

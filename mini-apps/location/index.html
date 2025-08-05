@@ -11,6 +11,8 @@
 <body>
 
   <button id="geofenceBtn"><i class="fa-solid fa-ellipsis-vertical"></i></button>
+  <button id="toggleTracking">Start Logging</button>
+  <button id="PastLocationBtn"><i class="fa fa-history"></i></button>
   <div id="statusBanner">Waiting for location...</div>
   <div id="map"></div>
   
@@ -36,7 +38,17 @@
       <select id="buildingSelect" disabled></select>
 
       <button id="applyGeofenceBtn">Apply</button>
-      <button id="cancelBtn">Close</button>
+      <button id="cancelGeofenceBtn">Close</button>
+    </div>
+  </div>
+
+  <div id="pastLocationModal" class="modal hidden">
+    <div class="modal-content">
+      <h2>Past Location</h2>
+
+      <ul id="locationList"></ul>
+
+      <button id="cancelPastLocationBtn">Close</button>
     </div>
   </div>
 
