@@ -184,11 +184,23 @@ import { saveLocation , getAllLocations } from './locationDB';
     return inside;
   }
 
-  async function populateLocationList() {
+  function saveLocation(lat, lng, timestamp) {
+    const data = sessionStorage.getItem('locations');
+    const locations = data ? JSON.parse(data) : [];
+    locations.push({ latitude: lat, longitude: lng, timestamp });
+    sessionStorage.setItem('locations', JSON.stringify(locations));
+  }
+
+  function getAllLocations() {
+    const data = sessionStorage.getItem('locations');
+    return data ? JSON.parse(data) : [];
+  }
+
+  function populateLocationList() {
     const locationList = document.getElementById('locationList');
     locationList.innerHTML = ''; // Clear old entries
 
-    const locations = await getAllLocations();
+    const locations = getAllLocations();
 
     if (!locations.length) {
       const li = document.createElement('li');
