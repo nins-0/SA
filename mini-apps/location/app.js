@@ -1,86 +1,6 @@
-// function startLocationUpdates() {
-//   if (navigator.geolocation) {
-//     watchId = navigator.geolocation.watchPosition(
-//       (position) => {
-//         const { latitude, longitude } = position.coords;
-//         sendMessage({
-//           event: "location_update",
-//           latitude,
-//           longitude,
-//           timestamp: Date.now()
-//         });
-//       },
-//       (error) => {
-//         sendMessage({
-//           event: "location_error",
-//           code: error.code,
-//           message: error.message
-//         });
-//       },
-//       {
-//         enableHighAccuracy: true,
-//         maximumAge: 1000,
-//         timeout: 10000,
-//       }
-//     );
-//   } else {
-//     sendMessage({
-//       event: "location_error",
-//       message: "Geolocation is not supported"
-//     });
-//   }
-// }
-
-// function stopLocationUpdates() {
-//   if (watchId !== null) {
-//     navigator.geolocation.clearWatch(watchId);
-//     watchId = null;
-//   }
-// }
-
-// let map, marker;
-
-// function initMap(lat, lng) {
-//   map = L.map('map').setView([lat, lng], 16);
-
-//   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-//     attribution: '&copy; OpenStreetMap contributors'
-//   }).addTo(map);
-
-//   marker = L.marker([lat, lng])
-//     .addTo(map)
-//     .bindPopup("You are here");
-// }
-
-// function updateLocation(lat, lng) {
-//   if (!map) {
-//     initMap(lat, lng);
-//   } else {
-//     marker.setLatLng([lat, lng]);
-//     map.setView([lat, lng]);
-//   }
-// }
-
-// navigator.geolocation.watchPosition(
-//   (pos) => {
-//     const { latitude, longitude } = pos.coords;
-//     updateLocation(latitude, longitude);
-//   },
-//   (err) => {
-//     alert("Unable to get location: " + err.message);
-//   },
-//   {
-//     enableHighAccuracy: true,
-//     maximumAge: 1000,
-//     timeout: 10000,
-//   }
-// );
-
 import { saveLocation , getAllLocations } from './locationDB';
 
 document.addEventListener("DOMContentLoaded", () => {
-
-  console.log('Script loaded and DOM ready');
 
   let map, marker, circle, polygonLayer;
   let userLat = null;
@@ -183,18 +103,18 @@ document.addEventListener("DOMContentLoaded", () => {
 
   document.getElementById('pastLocationBtn').addEventListener('click', () => {
 
-    populateLocationList();
+    // populateLocationList();
 
     document.getElementById('pastLocationModal').classList.remove('hidden');
   });
 
-  toggleBtn.addEventListener('click', () => {
-    shouldLog = !shouldLog;
-    toggleBtn.textContent = shouldLog ? 'Stop Logging' : 'Start Logging';
-    if (!shouldLog) {
-      alert('Location logging stopped');
-    }
-  });
+  // toggleBtn.addEventListener('click', () => {
+  //   shouldLog = !shouldLog;
+  //   toggleBtn.textContent = shouldLog ? 'Stop Logging' : 'Start Logging';
+  //   if (!shouldLog) {
+  //     alert('Location logging stopped');
+  //   }
+  // });
 
   function updateLocation(lat, lng) {
     userLat = lat;
@@ -237,10 +157,10 @@ document.addEventListener("DOMContentLoaded", () => {
       const { latitude, longitude } = pos.coords;
       updateLocation(latitude, longitude);
 
-      if (shouldLog) {
-        const timestamp = Date.now();
-        saveLocation(latitude, longitude, timestamp);
-      }
+      // if (shouldLog) {
+      //   const timestamp = Date.now();
+      //   saveLocation(latitude, longitude, timestamp);
+      // }
     },
     (err) => {
       alert("Unable to get location: " + err.message);
