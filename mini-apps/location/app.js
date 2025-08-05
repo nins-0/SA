@@ -1,6 +1,6 @@
 import { saveLocation , getAllLocations } from './locationDB';
 
-document.addEventListener("DOMContentLoaded", () => {
+
 
   let map, marker, circle, polygonLayer;
   let userLat = null;
@@ -97,16 +97,16 @@ document.addEventListener("DOMContentLoaded", () => {
 
   }
 
-  document.getElementById('cancelPastLocationBtn').addEventListener('click', () => {
-    document.getElementById('pastLocationModal').classList.add('hidden');
-  });
+  // document.getElementById('cancelPastLocationBtn').addEventListener('click', () => {
+  //   document.getElementById('pastLocationModal').classList.add('hidden');
+  // });
 
-  document.getElementById('pastLocationBtn').addEventListener('click', () => {
+  // document.getElementById('pastLocationBtn').addEventListener('click', () => {
 
-    // populateLocationList();
+  //   // populateLocationList();
 
-    document.getElementById('pastLocationModal').classList.remove('hidden');
-  });
+  //   document.getElementById('pastLocationModal').classList.remove('hidden');
+  // });
 
   // toggleBtn.addEventListener('click', () => {
   //   shouldLog = !shouldLog;
@@ -186,23 +186,22 @@ document.addEventListener("DOMContentLoaded", () => {
     return inside;
   }
 
-  async function populateLocationList() {
-    const locationList = document.getElementById('locationList');
-    locationList.innerHTML = ''; // Clear old entries
+  // async function populateLocationList() {
+  //   const locationList = document.getElementById('locationList');
+  //   locationList.innerHTML = ''; // Clear old entries
 
-    const locations = await getAllLocations();
+  //   const locations = await getAllLocations();
 
-    if (!locations.length) {
-      const li = document.createElement('li');
-      li.textContent = 'No locations recorded.';
-      locationList.appendChild(li);
-      return;
-    }
+  //   if (!locations.length) {
+  //     const li = document.createElement('li');
+  //     li.textContent = 'No locations recorded.';
+  //     locationList.appendChild(li);
+  //     return;
+  //   }
 
-    locations.forEach(({ latitude, longitude, timestamp }) => {
-      const li = document.createElement('li');
-      li.textContent = `${new Date(timestamp).toLocaleString()} - [${latitude.toFixed(5)}, ${longitude.toFixed(5)}]`;
-      locationList.appendChild(li);
-    });
-  }
-});
+  //   locations.forEach(({ latitude, longitude, timestamp }) => {
+  //     const li = document.createElement('li');
+  //     li.textContent = `${new Date(timestamp).toLocaleString()} - [${latitude.toFixed(5)}, ${longitude.toFixed(5)}]`;
+  //     locationList.appendChild(li);
+  //   });
+  // }
