@@ -146,7 +146,7 @@
       initMap(lat, lng);
     } else {
       marker.setLatLng([lat, lng]);
-      map.setView([lat, lng]);
+      // map.setView([lat, lng]);
     }
 
     const banner = document.getElementById('statusBanner');
