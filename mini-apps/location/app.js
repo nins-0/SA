@@ -218,7 +218,8 @@
       type: 'locationUpdate',
       latitude: lat,
       longitude: lng,
-      timestamp: timestamp
+      timestamp: timestamp,
+      userId:'1'
     });
   }
 
