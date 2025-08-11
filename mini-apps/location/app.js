@@ -187,6 +187,13 @@
     const locations = data ? JSON.parse(data) : [];
     locations.push({ latitude: lat, longitude: lng, timestamp });
     sessionStorage.setItem('locations', JSON.stringify(locations));
+
+    sendToMainApp({
+      type: 'locationUpdate',
+      latitude: lat,
+      longitude: lng,
+      timestamp: timestamp
+    });
   }
 
   function getAllLocations() {
@@ -213,3 +220,8 @@
       locationList.appendChild(li);
     });
   }
+
+
+function sendToMainApp(messageObj) {
+  window.ReactNativeWebView.postMessage(JSON.stringify(messageObj));
+}
