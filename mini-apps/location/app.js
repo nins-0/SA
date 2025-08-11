@@ -34,18 +34,44 @@
       .addTo(map)
       .bindPopup("You are here");
 
-    fetch('buildings.json')
-    .then(res => res.json())
-    .then(data => {
-      buildingData = data;
-      const buildingSelect = document.getElementById('buildingSelect');
-      buildingData.forEach((b, i) => {
-        const option = document.createElement('option');
-        option.value = i;
-        option.text = b.name;
-        buildingSelect.appendChild(option);
-      });
+    // fetch('buildings.json')
+    // .then(res => res.json())
+    // .then(data => {
+    //   buildingData = data;
+    //   const buildingSelect = document.getElementById('buildingSelect');
+    //   buildingData.forEach((b, i) => {
+    //     const option = document.createElement('option');
+    //     option.value = i;
+    //     option.text = b.name;
+    //     buildingSelect.appendChild(option);
+    //   });
+    // });
+
+  fetch('geofencing_zones_test01.geojson')
+  .then(res => res.json())
+  .then(geojson => {
+    // Convert GeoJSON features to your old format
+    buildingData = geojson.features.map(feature => {
+      const name = feature.properties.name;
+
+      // GeoJSON coords are [lng, lat], and MultiPolygon has an extra nesting
+      const coords = feature.geometry.coordinates[0][0].map(([lng, lat]) => ({
+        latitude: lat,
+        longitude: lng
+      }));
+
+      return { name, polygon: coords };
     });
+
+    // Now your existing UI code still works
+    const buildingSelect = document.getElementById('buildingSelect');
+    buildingData.forEach((b, i) => {
+      const option = document.createElement('option');
+      option.value = i;
+      option.text = b.name;
+      buildingSelect.appendChild(option);
+    });
+  });
 
     document.getElementById('geofenceBtn').addEventListener('click', () => {
       const mode = document.querySelector('input[name="geofenceMode"]:checked').value;
