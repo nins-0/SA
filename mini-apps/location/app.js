@@ -297,7 +297,13 @@
       banner.textContent = "You are outside the geofence";
       banner.style.backgroundColor = "#c48989";
       banner.style.color = "#2b2b2b";
-      lastFenceLogged = null;  // reset last logged fence
+      
+      // If user was inside before, now exited - send exit event once
+      if (lastFenceLogged !== null) {
+        saveUserInFence(lastFenceLogged, new Date().toISOString(), 'exit');
+        lastFenceLogged = null;
+      }
+
       return;
     }
 
@@ -308,7 +314,7 @@
     // Only send update if logging is enabled and entered a new fence
     if (shouldLog && enteredFence && lastFenceLogged !== enteredFence) {
       const timestamp = Date.now();
-      saveUserInFence(enteredFence, new Date(timestamp).toISOString());
+      saveUserInFence(enteredFence, new Date().toISOString(), 'enter');
       lastFenceLogged = enteredFence;
     }
   }
@@ -363,15 +369,14 @@
     });
   }
 
-  function saveUserInFence(fence, timestamp) {
-
+  function saveUserInFence(fence, timestamp, type) {
     sendToMainApp({
       type: 'userInFenceUpdate',
-      userId:'1',
+      userId: '1',
       fence: fence,
       timestamp: timestamp,
+      eventType: type 
     });
-
   }
 
   function getAllLocations() {
