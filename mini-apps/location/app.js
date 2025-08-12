@@ -6,6 +6,7 @@
   let geofenceMode = 'building';
   let activePolygon = null;
   let shouldLog = false;
+  let lastFenceLogged = null;
 
   const radiusInput = document.querySelector('input[value="radius"]');
   const buildingInput = document.querySelector('input[value="building"]');
@@ -247,9 +248,18 @@
     banner.style.backgroundColor = inside ? "#7ea387" : "#c48989";
     banner.style.color = "#2b2b2b";
 
+    // Log only if inside and the fence is different from last logged
     if (shouldLog && enteredFence) {
-      const timestamp = Date.now();
-      saveUserInFence(enteredFence, timestamp);
+      if (lastFenceLogged !== enteredFence) {
+        const timestamp = Date.now();
+        saveUserInFence(enteredFence, timestamp);
+        lastFenceLogged = enteredFence;
+      }
+    }
+
+    // Reset lastFenceLogged when user leaves the fence
+    if (!inside) {
+      lastFenceLogged = null;
     }
 
   }
