@@ -3,7 +3,7 @@
   let userLng = null;
   let currentRadius = 200;
   let buildingData = [];
-  let geofenceMode = 'radius';
+  let geofenceMode = 'building';
   let activePolygon = null;
   let shouldLog = false;
 
@@ -110,6 +110,25 @@
           option.text = b.name;
           buildingSelect.appendChild(option);
         });
+
+        if (!window.polygonLayer) {
+          window.polygonLayer = L.layerGroup().addTo(map);
+        } else {
+          window.polygonLayer.clearLayers();
+        }
+
+        buildingData.forEach(b => {
+          if (b.polygon.length > 0) {
+            const latlngs = b.polygon.map(coord => [coord.latitude, coord.longitude]);
+            L.polygon(latlngs, {
+              color: 'blue',
+              weight: 2,
+              fillColor: 'rgba(0, 0, 255, 0.3)',
+              fillOpacity: 0.3
+            }).bindPopup(b.name).addTo(window.polygonLayer);
+          }
+        });
+
         }
       } catch (e) {
         console.error('Invalid message received in mini app:', e);
@@ -196,6 +215,18 @@
     const banner = document.getElementById('statusBanner');
 
     let inside = false;
+    let enteredFence = null;
+
+    for (let b of buildingData) {
+      if (b.polygon.length > 0) {
+        const polygonCoords = b.polygon.map(p => [p.latitude, p.longitude]);
+        if (pointInPolygon([lat, lng], polygonCoords)) {
+          inside = true;
+          enteredFence = b.name; 
+          break;
+        }
+      }
+    }
 
     if (geofenceMode === 'radius' && circle) {
       const distance = map.distance([lat, lng], circle.getLatLng());
@@ -215,6 +246,11 @@
 
     banner.style.backgroundColor = inside ? "#7ea387" : "#c48989";
     banner.style.color = "#2b2b2b";
+
+    if (shouldLog && enteredFence) {
+      const timestamp = Date.now();
+      saveUserInFence(enteredFence, timestamp);
+    }
 
   }
 
@@ -263,8 +299,19 @@
       latitude: lat,
       longitude: lng,
       timestamp: timestamp,
-      userId:'2'
+      userId:'1'
     });
+  }
+
+  function saveUserInFence(fence, timestamp) {
+
+    sendToMainApp({
+      type: 'userInFenceUpdate',
+      userId:'1',
+      fence: fence,
+      timestamp: timestamp,
+    });
+
   }
 
   function getAllLocations() {
