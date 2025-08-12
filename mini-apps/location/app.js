@@ -70,6 +70,8 @@
     //   });
     // });
 
+    console.log('listener not working');
+
     document.addEventListener('message', (event) => {
       try {
         const data = JSON.parse(event.data);
