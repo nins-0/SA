@@ -70,12 +70,14 @@
     //   });
     // });
 
-    window.addEventListener('message', (event) => {
+    document.addEventListener('message', (event) => {
       try {
         const data = JSON.parse(event.data);
 
         if (data.type === 'geofencingZones') {
           const zones = data.zones;
+
+          console.log('Zones received:', zones);
 
           // Convert your zones (GeoJSON) into your format
           buildingData = zones.map(feature => {
