@@ -94,7 +94,7 @@
           return { name, polygon: coords };
         });
 
-          // Populate buildingSelect dropdown
+        // Populate buildingSelect dropdown
         const buildingSelect = document.getElementById('buildingSelect');
         
         if (!buildingSelect) {
@@ -263,7 +263,7 @@
       latitude: lat,
       longitude: lng,
       timestamp: timestamp,
-      userId:'1'
+      userId:'2'
     });
   }
 
