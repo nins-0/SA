@@ -23,6 +23,14 @@
     buildingSelect.disabled = false;
   });
 
+  function requestGeofencingZones() {
+    sendToMainApp({ type: 'getGeofencingZones' });
+  }
+
+  function sendToMainApp(messageObj) {
+    window.ReactNativeWebView.postMessage(JSON.stringify(messageObj));
+  }
+
   function initMap(lat, lng) {
     map = L.map('map').setView([lat, lng], 16);
 
@@ -34,10 +42,25 @@
       .addTo(map)
       .bindPopup("You are here");
 
-    // fetch('buildings.json')
+    requestGeofencingZones();
+
+    // fetch('geofencing_zones_test01.geojson')
     // .then(res => res.json())
-    // .then(data => {
-    //   buildingData = data;
+    // .then(geojson => {
+    //   // Convert GeoJSON features to your old format
+    //   buildingData = geojson.features.map(feature => {
+    //     const name = feature.properties.name;
+
+    //     // GeoJSON coords are [lng, lat], and MultiPolygon has an extra nesting
+    //     const coords = feature.geometry.coordinates[0][0].map(([lng, lat]) => ({
+    //       latitude: lat,
+    //       longitude: lng
+    //     }));
+
+    //     return { name, polygon: coords };
+    //   });
+
+    //   // Now your existing UI code still works
     //   const buildingSelect = document.getElementById('buildingSelect');
     //   buildingData.forEach((b, i) => {
     //     const option = document.createElement('option');
@@ -47,31 +70,40 @@
     //   });
     // });
 
-  fetch('geofencing_zones_test01.geojson')
-  .then(res => res.json())
-  .then(geojson => {
-    // Convert GeoJSON features to your old format
-    buildingData = geojson.features.map(feature => {
-      const name = feature.properties.name;
+    window.addEventListener('message', (event) => {
+      try {
+        const data = JSON.parse(event.data);
 
-      // GeoJSON coords are [lng, lat], and MultiPolygon has an extra nesting
-      const coords = feature.geometry.coordinates[0][0].map(([lng, lat]) => ({
-        latitude: lat,
-        longitude: lng
-      }));
+        if (data.type === 'geofencingZones') {
+          const zones = data.zones;
 
-      return { name, polygon: coords };
+          // Convert your zones (GeoJSON) into your format
+          buildingData = zones.map(feature => {
+            const name = feature.name;
+            // GeoJSON coords [lng, lat], MultiPolygon is nested
+            const coords = JSON.parse(feature.geom).coordinates[0][0].map(([lng, lat]) => ({
+              latitude: lat,
+              longitude: lng
+            }));
+            return { name, polygon: coords };
+          });
+
+          // Populate buildingSelect dropdown
+          const buildingSelect = document.getElementById('buildingSelect');
+          buildingSelect.innerHTML = ''; // Clear existing options
+
+          buildingData.forEach((b, i) => {
+            const option = document.createElement('option');
+            option.value = i;
+            option.text = b.name;
+            buildingSelect.appendChild(option);
+          });
+        }
+      } catch (e) {
+        console.error('Invalid message received in mini app:', e);
+      }
     });
 
-    // Now your existing UI code still works
-    const buildingSelect = document.getElementById('buildingSelect');
-    buildingData.forEach((b, i) => {
-      const option = document.createElement('option');
-      option.value = i;
-      option.text = b.name;
-      buildingSelect.appendChild(option);
-    });
-  });
 
     document.getElementById('geofenceBtn').addEventListener('click', () => {
       const mode = document.querySelector('input[name="geofenceMode"]:checked').value;
@@ -249,6 +281,3 @@
   }
 
 
-function sendToMainApp(messageObj) {
-  window.ReactNativeWebView.postMessage(JSON.stringify(messageObj));
-}
