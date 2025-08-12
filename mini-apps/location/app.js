@@ -70,38 +70,46 @@
     //   });
     // });
 
-    console.log('listener not working');
-
     document.addEventListener('message', (event) => {
       try {
         const data = JSON.parse(event.data);
 
         if (data.type === 'geofencingZones') {
-          const zones = data.zones;
+          const zones = data.zones.data; 
 
-          console.log('Zones received:', zones);
+        buildingData = zones.map(feature => {
+          const name = feature.name;
+          const geom = feature.geometry;
 
-          // Convert your zones (GeoJSON) into your format
-          buildingData = zones.map(feature => {
-            const name = feature.name;
-            // GeoJSON coords [lng, lat], MultiPolygon is nested
-            const coords = JSON.parse(feature.geom).coordinates[0][0].map(([lng, lat]) => ({
-              latitude: lat,
-              longitude: lng
-            }));
-            return { name, polygon: coords };
-          });
+          if (!geom || !geom.coordinates || !geom.coordinates[0] || !geom.coordinates[0][0]) {
+            console.warn('Unexpected geometry format for feature:', feature);
+            return { name, polygon: [] };
+          }
+
+          const coords = geom.coordinates[0][0].map(([lng, lat]) => ({
+            latitude: lat,
+            longitude: lng
+          }));
+
+          return { name, polygon: coords };
+        });
 
           // Populate buildingSelect dropdown
-          const buildingSelect = document.getElementById('buildingSelect');
-          buildingSelect.innerHTML = ''; // Clear existing options
+        const buildingSelect = document.getElementById('buildingSelect');
+        
+        if (!buildingSelect) {
+          console.error('Dropdown element with ID "buildingSelect" not found.');
+          return;
+        }
 
-          buildingData.forEach((b, i) => {
-            const option = document.createElement('option');
-            option.value = i;
-            option.text = b.name;
-            buildingSelect.appendChild(option);
-          });
+        buildingSelect.innerHTML = ''; // Clear existing options
+
+        buildingData.forEach((b, i) => {
+          const option = document.createElement('option');
+          option.value = i;
+          option.text = b.name;
+          buildingSelect.appendChild(option);
+        });
         }
       } catch (e) {
         console.error('Invalid message received in mini app:', e);
