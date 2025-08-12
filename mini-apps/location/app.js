@@ -308,7 +308,7 @@
     // Only send update if logging is enabled and entered a new fence
     if (shouldLog && enteredFence && lastFenceLogged !== enteredFence) {
       const timestamp = Date.now();
-      saveUserInFence(enteredFence, timestamp);
+      saveUserInFence(enteredFence, new Date(timestamp).toISOString());
       lastFenceLogged = enteredFence;
     }
   }
