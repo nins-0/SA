@@ -264,7 +264,61 @@
   // }
 
 
-  let lastFenceLogged = null;
+  // let lastFenceLogged = null;
+
+  // function updateLocation(lat, lng) {
+  //   userLat = lat;
+  //   userLng = lng;
+
+  //   if (!map) {
+  //     initMap(lat, lng);
+  //   } else {
+  //     marker.setLatLng([lat, lng]);
+  //   }
+
+  //   const banner = document.getElementById('statusBanner');
+
+  //   let inside = false;
+  //   let enteredFence = null;
+
+  //   // Only check building polygons
+  //   for (let b of buildingData) {
+  //     if (b.polygon.length > 0) {
+  //       const polygonCoords = b.polygon.map(p => [p.latitude, p.longitude]);
+  //       if (pointInPolygon([lat, lng], polygonCoords)) {
+  //         inside = true;
+  //         enteredFence = b.name;
+  //         break;
+  //       }
+  //     }
+  //   }
+
+  //   if (!inside) {
+  //     banner.textContent = "You are outside the geofence";
+  //     banner.style.backgroundColor = "#c48989";
+  //     banner.style.color = "#2b2b2b";
+      
+  //     // If user was inside before, now exited - send exit event once
+  //     if (lastFenceLogged !== null) {
+  //       saveUserInFence(lastFenceLogged, Date.now(), 'Exit');
+  //       lastFenceLogged = null;
+  //     }
+
+  //     return;
+  //   }
+
+  //   banner.textContent = `You are within the geofence: ${enteredFence}`;
+  //   banner.style.backgroundColor = "#7ea387";
+  //   banner.style.color = "#2b2b2b";
+
+  //   // Only send update if logging is enabled and entered a new fence
+  //   if (shouldLog && enteredFence && lastFenceLogged !== enteredFence) {
+  //     saveUserInFence(enteredFence, Date.now(), 'Enter');
+  //     lastFenceLogged = enteredFence;
+  //   }
+  // }
+
+  let activeFences = new Set(); // Track all fences currently inside
 
   function updateLocation(lat, lng) {
     userLat = lat;
@@ -278,43 +332,43 @@
 
     const banner = document.getElementById('statusBanner');
 
-    let inside = false;
-    let enteredFence = null;
+    let fencesInside = [];
 
     // Only check building polygons
     for (let b of buildingData) {
       if (b.polygon.length > 0) {
         const polygonCoords = b.polygon.map(p => [p.latitude, p.longitude]);
         if (pointInPolygon([lat, lng], polygonCoords)) {
-          inside = true;
-          enteredFence = b.name;
-          break;
+          fencesInside.push(b.name);
         }
       }
     }
 
-    if (!inside) {
-      banner.textContent = "You are outside the geofence";
-      banner.style.backgroundColor = "#c48989";
-      banner.style.color = "#2b2b2b";
-      
-      // If user was inside before, now exited - send exit event once
-      if (lastFenceLogged !== null) {
-        saveUserInFence(lastFenceLogged, Date.now(), 'Exit');
-        lastFenceLogged = null;
+    // --- Handle EXIT events ---
+    for (let fence of [...activeFences]) {
+      if (!fencesInside.includes(fence)) {
+        saveUserInFence(fence, new Date().toISOString(), 'Exit');
+        activeFences.delete(fence);
       }
-
-      return;
     }
 
-    banner.textContent = `You are within the geofence: ${enteredFence}`;
-    banner.style.backgroundColor = "#7ea387";
-    banner.style.color = "#2b2b2b";
+    // --- Handle ENTER events ---
+    for (let fence of fencesInside) {
+      if (!activeFences.has(fence)) {
+        saveUserInFence(fence, new Date().toISOString(), 'Enter');
+        activeFences.add(fence);
+      }
+    }
 
-    // Only send update if logging is enabled and entered a new fence
-    if (shouldLog && enteredFence && lastFenceLogged !== enteredFence) {
-      saveUserInFence(enteredFence, Date.now(), 'Enter');
-      lastFenceLogged = enteredFence;
+    // --- UI update ---
+    if (fencesInside.length === 0) {
+      banner.textContent = "You are outside all geofences";
+      banner.style.backgroundColor = "#c48989";
+      banner.style.color = "#2b2b2b";
+    } else {
+      banner.textContent = `Inside geofence(s): ${fencesInside.join(', ')}`;
+      banner.style.backgroundColor = "#7ea387";
+      banner.style.color = "#2b2b2b";
     }
   }
 
