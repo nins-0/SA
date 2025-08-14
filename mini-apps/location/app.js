@@ -300,7 +300,7 @@
       
       // If user was inside before, now exited - send exit event once
       if (lastFenceLogged !== null) {
-        saveUserInFence(lastFenceLogged, new Date().toISOString(), 'exit');
+        saveUserInFence(lastFenceLogged, Date.now(), 'exit');
         lastFenceLogged = null;
       }
 
