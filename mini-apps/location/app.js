@@ -135,6 +135,10 @@
       }
     });
 
+    document.getElementById('closeNotiBtn').addEventListener('click', () => {
+      document.getElementById('notiModal').classList.add('hidden');
+    });
+
 
     // document.getElementById('geofenceBtn').addEventListener('click', () => {
     //   const mode = document.querySelector('input[name="geofenceMode"]:checked').value;
@@ -183,14 +187,16 @@
   }
 
   document.getElementById('ChangeTrackingBtn').addEventListener('click', () => {
-    alert('changed');
+    document.getElementById('notiMsg').textContent = "Tracking Method Changed";
+    document.getElementById('notiModal').classList.remove('hidden');
   });
 
   toggleBtn.addEventListener('click', () => {
     shouldLog = !shouldLog;
     toggleBtn.textContent = shouldLog ? 'Stop Logging' : 'Start Logging';
     if (!shouldLog) {
-      alert('Location logging stopped');
+      document.getElementById('notiMsg').textContent = "Tracking Has Stopped";
+      document.getElementById('notiModal').classList.remove('hidden');
     }
   });
   
