@@ -94,21 +94,21 @@
           return { name, polygon: coords };
         });
 
-        // Populate buildingSelect dropdown
-        const buildingSelect = document.getElementById('buildingSelect');
+        // // Populate buildingSelect dropdown
+        // const buildingSelect = document.getElementById('buildingSelect');
         
-        if (!buildingSelect) {
-          console.error('Dropdown element with ID "buildingSelect" not found.');
-          return;
-        }
+        // if (!buildingSelect) {
+        //   console.error('Dropdown element with ID "buildingSelect" not found.');
+        //   return;
+        // }
 
-        buildingSelect.innerHTML = ''; // Clear existing options
+        // buildingSelect.innerHTML = ''; // Clear existing options
 
         buildingData.forEach((b, i) => {
           const option = document.createElement('option');
           option.value = i;
           option.text = b.name;
-          buildingSelect.appendChild(option);
+          // buildingSelect.appendChild(option);
         });
 
         if (!window.polygonLayer) {
