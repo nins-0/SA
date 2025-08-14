@@ -186,10 +186,10 @@
 
   }
 
-  document.getElementById('ChangeTrackingBtn').addEventListener('click', () => {
-    document.getElementById('notiMsg').textContent = "Tracking Method Changed";
-    document.getElementById('notiModal').classList.remove('hidden');
-  });
+  // document.getElementById('ChangeTrackingBtn').addEventListener('click', () => {
+  //   document.getElementById('notiMsg').textContent = "Tracking Method Changed";
+  //   document.getElementById('notiModal').classList.remove('hidden');
+  // });
 
   toggleBtn.addEventListener('click', () => {
     shouldLog = !shouldLog;
@@ -255,25 +255,25 @@
   }
 
 
-  navigator.geolocation.watchPosition(
-    (pos) => {
-      const { latitude, longitude } = pos.coords;
-      updateLocation(latitude, longitude);
+  // navigator.geolocation.watchPosition(
+  //   (pos) => {
+  //     const { latitude, longitude } = pos.coords;
+  //     updateLocation(latitude, longitude);
 
-      if (shouldLog) {
-        const timestamp = Date.now();
-        saveLocation(latitude, longitude, timestamp);
-      }
-    },
-    (err) => {
-      alert("Unable to get location: " + err.message);
-    },
-    {
-      enableHighAccuracy: true,
-      maximumAge: 1000,
-      timeout: 10000,
-    }
-  );
+  //     if (shouldLog) {
+  //       const timestamp = Date.now();
+  //       saveLocation(latitude, longitude, timestamp);
+  //     }
+  //   },
+  //   (err) => {
+  //     alert("Unable to get location: " + err.message);
+  //   },
+  //   {
+  //     enableHighAccuracy: true,
+  //     maximumAge: 1000,
+  //     timeout: 10000,
+  //   }
+  // );
 
   function pointInPolygon(point, polygon) {
     const x = point[0], y = point[1];
@@ -315,5 +315,64 @@
   }
 
 
+let trackingMode = "watch"; // Default mode
+let watchId = null;
+let intervalId = null;
+
+function startWatchTracking() {
+  stopTracking(); // Stop any existing tracking
+  trackingMode = "watch";
+  watchId = navigator.geolocation.watchPosition(
+    (pos) => {
+      const { latitude, longitude } = pos.coords;
+      updateLocation(latitude, longitude);
+      if (shouldLog) saveLocation(latitude, longitude, Date.now());
+    },
+    (err) => alert("Unable to get location: " + err.message),
+    { enableHighAccuracy: true, maximumAge: 1000, timeout: 10000 }
+  );
+}
+
+function startIntervalTracking() {
+  stopTracking(); // Stop any existing tracking
+  trackingMode = "interval";
+  intervalId = setInterval(() => {
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        const { latitude, longitude } = pos.coords;
+        updateLocation(latitude, longitude);
+        if (shouldLog) saveLocation(latitude, longitude, Date.now());
+      },
+      (err) => console.error("Error getting location:", err),
+      { enableHighAccuracy: true, timeout: 10000 }
+    );
+  }, 15000); // 15 seconds
+}
+
+function stopTracking() {
+  if (watchId !== null) {
+    navigator.geolocation.clearWatch(watchId);
+    watchId = null;
+  }
+  if (intervalId !== null) {
+    clearInterval(intervalId);
+    intervalId = null;
+  }
+}
+
+// ChangeTrackingBtn click → toggle modes
+document.getElementById('ChangeTrackingBtn').addEventListener('click', () => {
+  if (trackingMode === "watch") {
+    startIntervalTracking();
+    document.getElementById('notiMsg').textContent = "Switched to 15s interval tracking";
+  } else {
+    startWatchTracking();
+    document.getElementById('notiMsg').textContent = "Switched to live watch tracking";
+  }
+  document.getElementById('notiModal').classList.remove('hidden');
+});
+
+// Start default tracking mode
+startWatchTracking();
 
 
