@@ -300,7 +300,7 @@
       
       // If user was inside before, now exited - send exit event once
       if (lastFenceLogged !== null) {
-        saveUserInFence(lastFenceLogged, Date.now(), 'exit');
+        saveUserInFence(lastFenceLogged, Date.now(), 'Exit');
         lastFenceLogged = null;
       }
 
@@ -313,8 +313,7 @@
 
     // Only send update if logging is enabled and entered a new fence
     if (shouldLog && enteredFence && lastFenceLogged !== enteredFence) {
-      const timestamp = Date.now();
-      saveUserInFence(enteredFence, new Date().toISOString(), 'enter');
+      saveUserInFence(enteredFence, Date.now(), 'Enter');
       lastFenceLogged = enteredFence;
     }
   }
@@ -369,13 +368,13 @@
     });
   }
 
-  function saveUserInFence(fence, timestamp, type) {
+  function saveUserInFence(fence, timestamp, event) {
     sendToMainApp({
       type: 'userInFenceUpdate',
       userId: '1',
       fence: fence,
       timestamp: timestamp,
-      eventType: type 
+      event: event 
     });
   }
 
