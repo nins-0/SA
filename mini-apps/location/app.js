@@ -31,6 +31,53 @@
     window.ReactNativeWebView.postMessage(JSON.stringify(messageObj));
   }
 
+  function handleMessage(event) {
+    try {
+      const data = JSON.parse(event.data);
+
+      if (data.type === 'geofencingZones') {
+        const zones = data.zones.data;
+
+        buildingData = zones.map(feature => {
+          const name = feature.name;
+          const geom = feature.geometry;
+
+          if (!geom?.coordinates?.[0]?.[0]) {
+            console.warn('Unexpected geometry format:', feature);
+            return { name, polygon: [] };
+          }
+
+          const coords = geom.coordinates[0][0].map(([lng, lat]) => ({
+            latitude: lat,
+            longitude: lng,
+          }));
+
+          return { name, polygon: coords };
+        });
+
+        if (!window.polygonLayer) {
+          window.polygonLayer = L.layerGroup().addTo(map);
+        } else {
+          window.polygonLayer.clearLayers();
+        }
+
+        buildingData.forEach(b => {
+          if (b.polygon.length > 0) {
+            const latlngs = b.polygon.map(coord => [coord.latitude, coord.longitude]);
+            L.polygon(latlngs, {
+              color: 'blue',
+              weight: 2,
+              fillColor: 'rgba(0, 0, 255, 0.3)',
+              fillOpacity: 0.3,
+            }).bindPopup(b.name).addTo(window.polygonLayer);
+          }
+        });
+      }
+    } catch (e) {
+      console.error('Invalid message received in mini app:', e);
+    }
+  }
+
   function initMap(lat, lng) {
     map = L.map('map').setView([lat, lng], 16);
 
@@ -70,70 +117,75 @@
     //   });
     // });
 
-    document.addEventListener('message', (event) => {
-      try {
-        const data = JSON.parse(event.data);
+    // document.addEventListener('message', (event) => {
+    //   try {
+    //     const data = JSON.parse(event.data);
 
-        if (data.type === 'geofencingZones') {
-          const zones = data.zones.data; 
+    //     if (data.type === 'geofencingZones') {
+    //       const zones = data.zones.data; 
 
-        buildingData = zones.map(feature => {
-          const name = feature.name;
-          const geom = feature.geometry;
+    //     buildingData = zones.map(feature => {
+    //       const name = feature.name;
+    //       const geom = feature.geometry;
 
-          if (!geom || !geom.coordinates || !geom.coordinates[0] || !geom.coordinates[0][0]) {
-            console.warn('Unexpected geometry format for feature:', feature);
-            return { name, polygon: [] };
-          }
+    //       if (!geom || !geom.coordinates || !geom.coordinates[0] || !geom.coordinates[0][0]) {
+    //         console.warn('Unexpected geometry format for feature:', feature);
+    //         return { name, polygon: [] };
+    //       }
 
-          const coords = geom.coordinates[0][0].map(([lng, lat]) => ({
-            latitude: lat,
-            longitude: lng
-          }));
+    //       const coords = geom.coordinates[0][0].map(([lng, lat]) => ({
+    //         latitude: lat,
+    //         longitude: lng
+    //       }));
 
-          return { name, polygon: coords };
-        });
+    //       return { name, polygon: coords };
+    //     });
 
-        // // Populate buildingSelect dropdown
-        // const buildingSelect = document.getElementById('buildingSelect');
+    //     // // Populate buildingSelect dropdown
+    //     // const buildingSelect = document.getElementById('buildingSelect');
         
-        // if (!buildingSelect) {
-        //   console.error('Dropdown element with ID "buildingSelect" not found.');
-        //   return;
-        // }
+    //     // if (!buildingSelect) {
+    //     //   console.error('Dropdown element with ID "buildingSelect" not found.');
+    //     //   return;
+    //     // }
 
-        // buildingSelect.innerHTML = ''; // Clear existing options
+    //     // buildingSelect.innerHTML = ''; // Clear existing options
 
-        buildingData.forEach((b, i) => {
-          const option = document.createElement('option');
-          option.value = i;
-          option.text = b.name;
-          // buildingSelect.appendChild(option);
-        });
+    //     buildingData.forEach((b, i) => {
+    //       const option = document.createElement('option');
+    //       option.value = i;
+    //       option.text = b.name;
+    //       // buildingSelect.appendChild(option);
+    //     });
 
-        if (!window.polygonLayer) {
-          window.polygonLayer = L.layerGroup().addTo(map);
-        } else {
-          window.polygonLayer.clearLayers();
-        }
+    //     if (!window.polygonLayer) {
+    //       window.polygonLayer = L.layerGroup().addTo(map);
+    //     } else {
+    //       window.polygonLayer.clearLayers();
+    //     }
 
-        buildingData.forEach(b => {
-          if (b.polygon.length > 0) {
-            const latlngs = b.polygon.map(coord => [coord.latitude, coord.longitude]);
-            L.polygon(latlngs, {
-              color: 'blue',
-              weight: 2,
-              fillColor: 'rgba(0, 0, 255, 0.3)',
-              fillOpacity: 0.3
-            }).bindPopup(b.name).addTo(window.polygonLayer);
-          }
-        });
+    //     buildingData.forEach(b => {
+    //       if (b.polygon.length > 0) {
+    //         const latlngs = b.polygon.map(coord => [coord.latitude, coord.longitude]);
+    //         L.polygon(latlngs, {
+    //           color: 'blue',
+    //           weight: 2,
+    //           fillColor: 'rgba(0, 0, 255, 0.3)',
+    //           fillOpacity: 0.3
+    //         }).bindPopup(b.name).addTo(window.polygonLayer);
+    //       }
+    //     });
 
-        }
-      } catch (e) {
-        console.error('Invalid message received in mini app:', e);
-      }
-    });
+    //     }
+    //   } catch (e) {
+    //     console.error('Invalid message received in mini app:', e);
+    //   }
+    // });
+    
+    // ✅ Android
+    document.addEventListener('message', handleMessage);
+    // ✅ iOS
+    window.addEventListener('message', handleMessage);
 
     document.getElementById('closeNotiBtn').addEventListener('click', () => {
       document.getElementById('notiModal').classList.add('hidden');
