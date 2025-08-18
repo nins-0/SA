@@ -189,6 +189,15 @@ body, html {
   background-color: #aaa;
 }
 
+#closeNotiBtn {
+  background-color: #4c5b85;
+  color: white;
+}
+
+#closeNotiBtn:hover {
+  background-color: #3a4566;
+}
+
 /* Utility class */
 .hidden {
   display: none;
