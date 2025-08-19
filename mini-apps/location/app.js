@@ -81,8 +81,8 @@
   function initMap(lat, lng) {
     map = L.map('map').setView([lat, lng], 16);
 
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '&copy; OpenStreetMap contributors'
+    L.tileLayer('https://www.onemap.gov.sg/maps/tiles/Default/{z}/{x}/{y}.png', {
+      attribution: 'onemap'
     }).addTo(map);
 
     marker = L.marker([lat, lng])
@@ -181,7 +181,7 @@
     //     console.error('Invalid message received in mini app:', e);
     //   }
     // });
-    
+
     // ✅ Android
     document.addEventListener('message', handleMessage);
     // ✅ iOS
